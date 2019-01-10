@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	canvas {
+		display: block;
+		border: 1px solid #000;
+		margin: 0 auto;
+	}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="360" height="512"></canvas>
+	<script type="text/javascript" src="js/Game.js"></script>
+	<script type="text/javascript" src="js/Background.js"></script>
+	<script type="text/javascript" src="js/Bird.js"></script>
+	<script type="text/javascript" src="js/Pipe.js"></script>
+	<script type="text/javascript">
+	// 1.加载所有图片
+	var imgArr = ["images/bg_day.png", "images/bird0_0.png", "images/bird0_1.png", "images/bird0_2.png", "images/land.png", "images/pipe_down.png", "images/pipe_up.png"];
+	// console.log(imgArr);
+
+	loadImage(imgArr, function(imgArr) {
+		// 开始游戏
+		var canvas = document.getElementById("canvas");
+		var pen = canvas.getContext("2d");
+		// console.log(pen);
+		var bird = new Bird(imgArr.slice(1, 4), 100, 100);
+		// console.log(bird);
+		// 管子初始在canvas的最右外侧
+		var pipe = new Pipe(imgArr[5], imgArr[6], 4, 360);
+		var land = new Background(imgArr[4], 4, 0, 400);
+		var mountain = new Background(imgArr[0], 2, 0, 0);
+
+		window.game = new Game(pen, bird, pipe, land, mountain);
+
+	})
+
+	// 2.为了避免全局变量污染，将加载图片的操作封装在一个函数中
+	function loadImage(arr, callback) {
+		var idx = 0;
+		// 定义一个数组将新创建的图片数组传回
+		var newImageArr = [];
+		arr.forEach(function(value, index) {
+			// 创建图片
+			var img = new Image();
+			img.src = value;
+			img.onload = function() {
+				idx ++;
+				newImageArr[index] = this;
+				if (idx === arr.length) {
+					// 说明加载完毕 执行callback
+					callback(newImageArr);
+				}
+			}
+
+		})
+	}
+	</script>
+</body>
+</html>
